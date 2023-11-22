@@ -12,7 +12,7 @@ document.addEventListener('click', function (event) {
     if (event.target.matches(".number")) {
 
         // check if currentNumber is populated and if nextAction is not "";
-        if ( parseInt(currentNumber.textContent) === memory){
+        if ( currentNumber.textContent === memory.toString()){
             currentNumber.textContent = "0";
         }
         updateCurrentNumber(event.target.value);
@@ -49,67 +49,37 @@ document.addEventListener('click', function (event) {
         }
         else { // run this for all other function  buttons
             if (nextAction != ""){
-                switch (nextAction) {
-                    case "+":
-                        memory = add(memory, parseFloat(currentNumber.textContent));
-                        // clear numberField
-                        clear();
-                        updateCurrentNumber(memory);
-                        // remove current active button indicator
-                        activeButton.classList.remove("active");
-                        // add indicator to this button instead
-                        event.target.classList.remove("active");
-                        break;
-
-                    case "-":
-                        memory = subtract(memory, parseFloat(currentNumber.textContent));
-                        // clear numberField
-                        clear();
-                        updateCurrentNumber(memory);
-                        // remove current active button indicator
-                        activeButton.classList.remove("active");
-                        // add indicator to this button instead
-                        event.target.classList.remove("active");
-                        break;
-
-                    case "*":
-                        memory = multiply(memory, parseFloat(currentNumber.textContent));
-                        // clear numberField
-                        clear();
-                        updateCurrentNumber(memory);
-                        // remove current active button indicator
-                        activeButton.classList.remove("active");
-                        // add indicator to this button instead
-                        event.target.classList.remove("active");
-                        break;
-
-                    case "/":
-                        memory = divide(memory, parseFloat(currentNumber.textContent));
-                        // clear numberField
-                        clear();
-                        updateCurrentNumber(memory);
-                        // remove current active button indicator
-                        activeButton.classList.remove("active");
-                        // add indicator to this button instead
-                        event.target.classList.remove("active");
-                        break;
-    
-                }
-                // perform next action with memory and current number, then update memory
-                // if next action is "=" then display the new memory value in the results section
+                // operate
+                memory = calculateResult(memory, nextAction, parseFloat(currentNumber.textContent));
+                // update Number field
+                clear();
+                updateCurrentNumber(memory);
+                // update nextAction
+                nextAction = event.target.value;
+                // remove current active button indicator
+                document.querySelector(".active").classList.remove("active"); // remove the current active indicator
+                // add indicator to this button instead
+                event.target.classList.add("active");
             }
             else {
+                // set nextAction
                 nextAction = event.target.value;
+                // memory
                 memory = parseFloat(currentNumber.textContent);
+                // set active action indicator
                 event.target.classList.add("active");
-                console.log(nextAction);
-                console.log(memory);
             }
         }
 	}
 }, false);
 
 // functions
+function displayNumber(number){
+    let roundedNumber = Math.round(number*10000000)/10000000
+    currentNumber.textContent += roundedNumber;
+    resultDiv.appendChild(currentNumber);
+}
+
 
 function calculateResult(number1, action, number2) {
     let result = 0;
@@ -135,8 +105,7 @@ function updateCurrentNumber(number){
         currentNumber.textContent = "";
     }
     // update the result field
-    currentNumber.textContent += number;
-    resultDiv.appendChild(currentNumber);
+    displayNumber(number);
 }
 function addDecimal(decimal){
     // update the result field
