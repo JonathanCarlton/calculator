@@ -1,26 +1,28 @@
 
-let resultDiv = document.querySelector(".result");
-let currentNumber = resultDiv.querySelector("p");
-let nextAction = "";
-let isCurrentNumberDecimal = false;
-let memory = 0;
+let displayDiv = document.querySelector(".result");
 
+let display = displayDiv.querySelector("p");
+let displayValue = "";
+let operand = "";
+let memory = "";
 
 // event listener for button clicks
 document.addEventListener('click', function (event) {
     // first check if it's a number button, then add clicked number to currentNumber
     if (event.target.matches(".number")) {
-
-        // check if currentNumber is populated and if nextAction is not "";
-        if ( currentNumber.textContent === memory.toString()){
-            currentNumber.textContent = "0";
+        // if display matches memory, then clear it and update display value and current value (This is usually after an operand is selected)
+        if ( display.textContent === memory.toString() || displayValue === ""){
+            displayValue = event.target.value;
         }
-        updateCurrentNumber(event.target.value);
-        
+        else {
+            displayValue += event.target.value; //increment the value for display
+        }
+        updateDisplay(displayValue); // update dispaly with new value
 	}
     // check if current number is already a decimal before adding a decimal point
-    if (event.target.matches(".decimal") && !isCurrentNumberDecimal) {
-        addDecimal(event.target.value);
+    if (event.target.matches(".decimal") && !display.textContent.includes(".")){
+        displayValue += "."
+        updateDisplay(displayValue);
 	}
 
     // check if clear is click, if there is already a number in memory, then 
@@ -38,48 +40,76 @@ document.addEventListener('click', function (event) {
         // if theres a next action, then perform the action
 
         if (event.target.value === "="){
-            if (nextAction != ""){
-                // perform the correct action on the memory and currentNumber
-                memory = calculateResult(memory, nextAction, parseFloat(currentNumber.textContent));
-                clear();
-                updateCurrentNumber(memory);
+            if (operand != "" && displayValue != "" && memory != ""){
+                memory = calculateResult(parseFloat(memory), operand, parseFloat(displayValue));
+                updateDisplay(memory);
                 document.querySelector(".active").classList.remove("active"); // remove the current active indicator
-                nextAction = "";
+                // reset operand and display value, store memory of result
+                displayValue = "";
+                operand = "";
             }
         }
-        else { // run this for all other function  buttons
-            if (nextAction != ""){
+        else { 
+            // this runs if an operand is clicked
+
+            // if operand is clicked, then check if there is a value in memory, if there is a value in memory then we need to 
+            // if operand is clicked, check if there is a value in displayValue, if not we dont want to run a calculation, we want to allow user to 
+                // enter a new value 
+            if (memory != "" && displayValue != ""){ // memory=true, displayValue=true, operand=true;
                 // operate
-                memory = calculateResult(memory, nextAction, parseFloat(currentNumber.textContent));
-                // update Number field
-                clear();
-                updateCurrentNumber(memory);
+                memory = calculateResult(parseFloat(memory), operand, parseFloat(displayValue));
+                // update Number field with value in memory
+                updateDisplay(memory);                
                 // update nextAction
-                nextAction = event.target.value;
+                operand = event.target.value;
                 // remove current active button indicator
-                document.querySelector(".active").classList.remove("active"); // remove the current active indicator
+                // if there is an active button, clear it
+                if (document.querySelector(".active")) {
+                    document.querySelector(".active").classList.remove("active"); // remove the current active indicator
+                }
                 // add indicator to this button instead
                 event.target.classList.add("active");
+                displayValue = "";
             }
-            else {
-                // set nextAction
-                nextAction = event.target.value;
+            else if (memory != "" && displayValue === ""){ // memory=true, displayValue=false, operand=false;
+                // allow user to enter in a new display value
+                operand = event.target.value;
+                event.target.classList.add("active");
+            }
+            else { // memory=false, displayValue=true, operand=false;
+                // enter displayValue into memory, set the operand Value and clear DisplayValue so user can enter another number
+                operand = event.target.value;
                 // memory
-                memory = parseFloat(currentNumber.textContent);
+                memory = displayValue;
                 // set active action indicator
                 event.target.classList.add("active");
+                // reset currentValue
+                displayValue = "";
             }
         }
 	}
 }, false);
 
-// functions
-function displayNumber(number){
-    let roundedNumber = Math.round(number*10000000)/10000000
-    currentNumber.textContent += roundedNumber;
-    resultDiv.appendChild(currentNumber);
+function updateDisplay(number){
+    // if display is 0, then set display to the passed in number
+    // else append the passed in number to the displayValue, and 
+    if (number === memory) {
+        roundedNumber = Math.round(number*10000000)/10000000; // round number to 7 decimal places if needed
+        display.textContent = roundedNumber;
+    }
+    else {
+        display.textContent = number;
+    }
+    displayDiv.appendChild(display);
 }
 
+function clear(clearAll=false){
+    if (clearAll){
+        memory = "";
+    }
+    displayValue = "";
+    updateDisplay("0")
+}
 
 function calculateResult(number1, action, number2) {
     let result = 0;
@@ -98,28 +128,6 @@ function calculateResult(number1, action, number2) {
             break;
     }
     return result;
-}
-
-function updateCurrentNumber(number){
-    if (currentNumber.textContent === "0") {
-        currentNumber.textContent = "";
-    }
-    // update the result field
-    displayNumber(number);
-}
-function addDecimal(decimal){
-    // update the result field
-    currentNumber.textContent += decimal;
-    resultDiv.appendChild(currentNumber);
-    isCurrentNumberDecimal = true;
-}
-
-function clear(clearAll=false){
-    if (clearAll){
-        memory = 0;
-    }
-    currentNumber.textContent = 0;
-    resultDiv.appendChild(currentNumber);
 }
 
 function add(number1, number2){
