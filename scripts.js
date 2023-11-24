@@ -29,56 +29,58 @@ document.addEventListener('click', function (event) {
     
     // check if it's a function button
     if (event.target.matches(".function")) {
-        // call the appropriate function
-        // check if there is a nextAction
-        // if theres a next action, then perform the action
+        if (memory != "" || displayValue != "" ){
+            // call the appropriate function
+            // check if there is a nextAction
+            // if theres a next action, then perform the action
 
-        if (event.target.value === "="){
-            if (operand != "" && displayValue != "" && memory != ""){
-                memory = calculateResult(parseFloat(memory), operand, parseFloat(displayValue));
-                updateDisplay(memory);
-                document.querySelector(".active").classList.remove("active"); // remove the current active indicator
-                // reset operand and display value, store memory of result
-                displayValue = "";
-                operand = "";
-            }
-        }
-        else { 
-            // this runs if an operand is clicked
-
-            // if operand is clicked, then check if there is a value in memory, if there is a value in memory then we need to 
-            // if operand is clicked, check if there is a value in displayValue, if not we dont want to run a calculation, we want to allow user to 
-                // enter a new value 
-            if (memory != "" && displayValue != ""){ // memory=true, displayValue=true, operand=true;
-                // operate
-                memory = calculateResult(parseFloat(memory), operand, parseFloat(displayValue));
-                // update Number field with value in memory
-                updateDisplay(memory);                
-                // update nextAction
-                operand = event.target.value;
-                // remove current active button indicator
-                // if there is an active button, clear it
-                if (document.querySelector(".active")) {
+            if (event.target.value === "="){
+                if (operand != "" && displayValue != "" && memory != ""){
+                    memory = calculateResult(parseFloat(memory), operand, parseFloat(displayValue));
+                    updateDisplay(memory);
                     document.querySelector(".active").classList.remove("active"); // remove the current active indicator
+                    // reset operand and display value, store memory of result
+                    displayValue = "";
+                    operand = "";
                 }
-                // add indicator to this button instead
-                event.target.classList.add("active");
-                displayValue = "";
             }
-            else if (memory != "" && displayValue === ""){ // memory=true, displayValue=false, operand=false;
-                // allow user to enter in a new display value
-                operand = event.target.value;
-                event.target.classList.add("active");
-            }
-            else { // memory=false, displayValue=true, operand=false;
-                // enter displayValue into memory, set the operand Value and clear DisplayValue so user can enter another number
-                operand = event.target.value;
-                // memory
-                memory = displayValue;
-                // set active action indicator
-                event.target.classList.add("active");
-                // reset currentValue
-                displayValue = "";
+            else { 
+                // this runs if an operand is clicked
+
+                // if operand is clicked, then check if there is a value in memory, if there is a value in memory then we need to 
+                // if operand is clicked, check if there is a value in displayValue, if not we dont want to run a calculation, we want to allow user to 
+                    // enter a new value 
+                if (memory != "" && displayValue != ""){ // memory=true, displayValue=true, operand=true;
+                    // operate
+                    memory = calculateResult(parseFloat(memory), operand, parseFloat(displayValue));
+                    // update Number field with value in memory
+                    updateDisplay(memory);                
+                    // update nextAction
+                    operand = event.target.value;
+                    // remove current active button indicator
+                    // if there is an active button, clear it
+                    if (document.querySelector(".active")) {
+                        document.querySelector(".active").classList.remove("active"); // remove the current active indicator
+                    }
+                    // add indicator to this button instead
+                    event.target.classList.add("active");
+                    displayValue = "";
+                }
+                else if (memory != "" && displayValue === ""){ // memory=true, displayValue=false, operand=false;
+                    // allow user to enter in a new display value
+                    operand = event.target.value;
+                    event.target.classList.add("active");
+                }
+                else { // memory=false, displayValue=true, operand=false;
+                    // enter displayValue into memory, set the operand Value and clear DisplayValue so user can enter another number
+                    operand = event.target.value;
+                    // memory
+                    memory = displayValue;
+                    // set active action indicator
+                    event.target.classList.add("active");
+                    // reset currentValue
+                    displayValue = "";
+                }
             }
         }
 	}
