@@ -94,7 +94,13 @@ document.addEventListener('click', function (event) {
 function updateDisplay(number){
     // if display is 0, then set display to the passed in number
     // else append the passed in number to the displayValue, and 
-    if (number === memory) {
+    if (number === "You can't divide by 0!"){
+        display.textContent = number;
+        memory = "";
+        operand = "";
+        displayValue = "";
+    }
+    else if (number === memory) {
         roundedNumber = Math.round(number*10000000)/10000000; // round number to 7 decimal places if needed
         display.textContent = roundedNumber;
     }
@@ -133,6 +139,9 @@ function calculateResult(number1, action, number2) {
             result = multiply(number1, number2);
             break;
         case "/":
+            if (number2 === 0){
+                return "You can't divide by 0!"
+            }
             result = divide(number1, number2);
             break;
     }
@@ -152,6 +161,7 @@ function multiply(number1, number2){
 }
 
 function divide(number1, number2){
+
     return number1 / number2;
 }
 
