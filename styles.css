@@ -2,3 +2,42 @@
     /* background-color: darkgray; */
     border-color: blue;
 }
+
+.button {
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+}
+
+.row {
+    display: flex;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    width: 50vw;
+    justify-content: center;
+    align-items: center;
+}
+
+.result {
+    display: flex;
+    width: 50vw;
+    justify-content: end;
+}
+
+.button {
+    flex-grow: 1;
+}
+
+#num0 {
+    flex-grow: 2;
+}
+
+.calculator {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
