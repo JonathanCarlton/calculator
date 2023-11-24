@@ -1,6 +1,8 @@
 
 let displayDiv = document.querySelector(".result");
 
+let clearButton = document.querySelector("#clear");
+
 let display = displayDiv.querySelector("p");
 let displayValue = "";
 let operand = "";
@@ -24,14 +26,6 @@ document.addEventListener('click', function (event) {
         displayValue += "."
         updateDisplay(displayValue);
 	}
-
-    // check if clear is click, if there is already a number in memory, then 
-    if (event.target.value === "c") {
-        clear();
-    }
-    if (event.target.value === "ac") {
-        clear(true);
-    }
     
     // check if it's a function button
     if (event.target.matches(".function")) {
@@ -88,6 +82,13 @@ document.addEventListener('click', function (event) {
             }
         }
 	}
+    // check if clear is click, if there is already a number in memory, then 
+    if (event.target.matches("#clear")) {
+        clear(clearButton.textContent);
+    }
+    if (clearButton.textContent != "C" && (displayValue != "" || display.textContent != "0")){ // if there is a current value and display is showing something 
+        clearButton.textContent = "C";
+    }
 }, false);
 
 function updateDisplay(number){
@@ -103,9 +104,17 @@ function updateDisplay(number){
     displayDiv.appendChild(display);
 }
 
-function clear(clearAll=false){
-    if (clearAll){
+function clear(buttonValue){
+    if (buttonValue === "AC"){
         memory = "";
+        // remove any operand and its highlight
+        operand = "";
+        if (document.querySelector(".active")) {
+            document.querySelector(".active").classList.remove("active"); // remove the current active indicator
+        }
+    }
+    if (memory != "") {
+        clearButton.textContent = "AC";
     }
     displayValue = "";
     updateDisplay("0")
